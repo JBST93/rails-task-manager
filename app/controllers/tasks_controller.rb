@@ -1,13 +1,8 @@
 class TasksController < ApplicationController
-  before_action :require_login
+  before_action :prepare_data
 
   def index
     @tasks = Task.all
-  end
-
-  def show
-    task_id = params[:id]
-    @task = Task.find(task_id)
   end
 
   def new
@@ -20,18 +15,12 @@ class TasksController < ApplicationController
     redirect_to tasks_path(@task)
   end
 
-  def edit
-    @task = Task.find(params[:id])
-  end
-
   def update
-    @task = Task.find(params[:id])
     @task.update(task_params)
     redirect_to task_path(@task)
   end
 
   def destroy
-    @task = Task.find(params[:id])
     @task.destroy
     redirect_to tasks_path, status: :see_other
   end
@@ -39,6 +28,10 @@ class TasksController < ApplicationController
   private
   def task_params
     params.require(:task).permit(:title, :detail)
+  end
+
+  def prepare_data
+    @task = Task.find(params[:id]) if (params[:id] != nil)
   end
 
 end
